@@ -36,4 +36,37 @@ export const Query: QueryResolvers = {
       },
     })
   },
+  cart: async (_, __, { prisma, userId }) => {
+    if (!userId) {
+      throw new Error('Not authenticated')
+    }
+    //current user
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+    if (!user) {
+      throw new Error('User not found')
+    }
+    const cart = await prisma.cartItem.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        product: true,
+        user: true,
+      },
+    })
+
+    return {
+      totalQuantity: cart.reduce((acc, cur) => acc + cur.quantity, 0),
+      totalPrice: cart.reduce(
+        (acc, cur) => acc + cur.quantity * cur.product.price,
+        0
+      ),
+      user: user,
+      cartItems: cart,
+    }
+  },
 }
