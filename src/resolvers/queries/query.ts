@@ -14,4 +14,26 @@ export const Query: QueryResolvers = {
       },
     })
   },
+  products: async (_, { category, count }, { prisma }) => {
+    let products
+    if (!category) {
+      products = await prisma.product.findMany({})
+    }
+    products = await prisma.product.findMany({
+      where: {
+        category: category!,
+      },
+    })
+    if (count) {
+      return products.slice(0, count)
+    }
+    return products
+  },
+  product: (_, { id }, { prisma }) => {
+    return prisma.product.findUnique({
+      where: {
+        id,
+      },
+    })
+  },
 }
