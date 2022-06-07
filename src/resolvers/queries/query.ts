@@ -69,4 +69,37 @@ export const Query: QueryResolvers = {
       cartItems: cart,
     }
   },
+  order: async (_, __, { prisma, userId }) => {
+    if (!userId) {
+      throw new Error('Not authenticated')
+    }
+    //current user
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+    if (!user) {
+      throw new Error('User not found')
+    }
+    const order = await prisma.orderItem.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        product: true,
+        user: true,
+      },
+    })
+
+    return {
+      totalQuantity: order.reduce((acc, cur) => acc + cur.quantity, 0),
+      totalPrice: order.reduce(
+        (acc, cur) => acc + cur.quantity * cur.product.price,
+        0
+      ),
+      user: user,
+      orderItems: order,
+    }
+  },
 }
