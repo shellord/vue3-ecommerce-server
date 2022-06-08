@@ -5,6 +5,12 @@ import { products } from './data'
 const prisma = new PrismaClient()
 
 const main = async () => {
+  console.log('\n🗑 Deleting Carts ...')
+  await prisma.cartItem.deleteMany({})
+  console.log('\n🗑 Deleting Orders ...')
+  await prisma.orderItem.deleteMany({})
+  console.log('\n🗑 Deleting Users ...')
+  await prisma.user.deleteMany({})
   console.log('\n🗑 Deleting Products ...\n')
   await prisma.product.deleteMany({})
   console.log('🌱 Start Seeding ...\n')
