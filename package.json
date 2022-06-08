@@ -8,8 +8,7 @@
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn ./src/index.ts",
     "build": "tsc -p .",
     "codegen": "graphql-codegen --config codegen.yml",
-    "seed": "prisma db seed ",
-    "postinstall": "seed"
+    "postinstall": "prisma db seed"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
